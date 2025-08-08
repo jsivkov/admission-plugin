@@ -29,6 +29,16 @@ function admission_Add_My_Admin_Link()
         'nvna-admission-settings', // Slug
         'nvna_admission_settings_page_html' // Callback function to render the HTML
     );  
+
+    
+    add_submenu_page(
+        'admission-admin-page',
+        'Непотвърдени регистрации',
+        'Непотвърдени',
+        'manage_options',
+        'nvna-admission-unverified',
+        'nvna_admission_unverified_page_html'
+    );
 }
 
 
@@ -52,3 +62,19 @@ function nvna_admission_admin_page_html() {
 
     require_once plugin_dir_path(__FILE__) . 'admission-admin-page.php';
 }
+
+function nvna_admission_unverified_page_html() {
+    if (!current_user_can('manage_options')) {
+        wp_die('Нямате права за достъп до тази страница.');
+    }
+
+    include plugin_dir_path(__FILE__) . 'unverified-users-page.php';
+}
+
+// Във functions.php на плъгина или включен файл
+function nvna_admission_registration_form_shortcode() {
+    ob_start();
+    include dirname(__DIR__)  . '/public/registration-form.php';
+    return ob_get_clean();
+}
+add_shortcode('nvna_admission_form', 'nvna_admission_registration_form_shortcode');
